@@ -578,6 +578,7 @@
             const data = {
                 timestamp: new Date().toLocaleString('zh-TW'),
                 courseDate: course.date + ' ' + course.time,
+                location: course.location, // 新增：傳送上課地點
                 employeeId: document.getElementById('employeeId').value,
                 name: document.getElementById('name').value,
                 department: document.getElementById('department').value,
@@ -594,8 +595,8 @@
             .then(result => {
                 if (result.status === 'success') {
                     showModal('success', 'Registration Successful', `
-                        Status: Confirmed<br>
                         Course: ${course.title}<br>
+                        Time: ${course.date} ${course.time}<br>
                         Reminder: 請記得攜帶可上網筆電上課
                     `, '#10B981');
                     
