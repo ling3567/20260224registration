@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全端系統搭建與實作應用教育訓練</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --primary: #0F172A;
+            --accent: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-main: #334155;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --code-bg: #F8FAFC;
+            --code-text: #0F172A;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-body);
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 60px;
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #2563EB, #06B6D4);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 40px;
+            margin-bottom: 20px;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tech-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            border-color: #CBD5E1;
+        }
+
+        .card-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-label::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .instructor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: var(--code-bg);
+            color: var(--code-text);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #EFF6FF;
+        }
+
+        h2.section-title {
+            margin: 30px 0 20px;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2.section-title::before {
+            content: '//';
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .course-item {
+            position: relative;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+        
+        .course-item.active {
+            border-color: var(--accent);
+            background: #F8FAFC;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .course-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .quota-badge {
+            background: #FEF2F2;
+            color: #EF4444;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #FECACA;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .course-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .info-icon {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            width: 60px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 16px;
+            font-family: 'Noto Sans TC', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover { background: var(--accent); }
+        .btn:disabled { background: #CBD5E1; cursor: not-allowed; }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: transparent;
+        }
+
+        #registration-section {
+            display: none;
+            margin-top: 30px;
+            border-top: 1px dashed var(--border);
+            padding-top: 30px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-header {
+            margin-bottom: 24px;
+            background: #EFF6FF;
+            padding: 16px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .form-label {
+            color: var(--text-main);
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--primary);
+            transition: all 0.2s;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .submit-btn {
+            background: var(--accent);
+            font-weight: 700;
+            padding: 12px;
+        }
+        .submit-btn:hover { background: var(--accent-hover); }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+            h1 { font-size: 3.5rem; }
+            .course-info { grid-template-columns: auto auto auto; }
+            .btn { width: auto; display: inline-flex; }
+            .action-area { text-align: right; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar"></div>
+    <header>
+        <div class="container">
+            <span class="tag-pill">教育訓練</span>
+            <h1>全端系統搭建<br>與實作應用</h1>
+            <p class="subtitle">Full-Stack System Development and Implementation Training</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="grid-2">
+            <div class="tech-card">
+                <span class="card-label">Instructor</span>
+                <div class="instructor-name">
+                    <span style="background:#E2E8F0; padding:4px 8px; border-radius:4px; font-size:0.8em;">教學部</span>
+                    廖家德部長
+                </div>
+            </div>
+            <div class="tech-card">
+                <span class="card-label">Tech Stack</span>
+                <div class="tags-container">
+                    <span class="skill-tag">Antigravity</span>
+                    <span class="skill-tag">Claude Code</span>
+                    <span class="skill-tag">Cowork</span>
+                    <span class="skill-tag">DevOps</span>
+                    <span class="skill-tag">Database</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增：課程需求提醒 -->
+        <div class="tech-card" style="padding: 16px; border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 16px; background: #EFF6FF;">
+            <div style="font-size: 2rem;">💻</div>
+            <div>
+                <span class="card-label" style="margin-bottom: 4px; color: var(--accent);">Course Requirement</span>
+                <div style="font-weight: 700; color: var(--primary); font-size: 1.1rem;">
+                    上課請自備可上網筆電，以利課程實作
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Select Session</h2>
+        <div id="course-list"></div>
+
+        <div id="registration-section">
+            <div class="tech-card" style="border-top: 4px solid var(--accent);">
+                <div class="form-header">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 4px; color: var(--primary);">填寫報名資料</h3>
+                    <p style="color: var(--accent); font-weight: 500; font-family: 'JetBrains Mono', monospace;" id="selected-course-display"></p>
+                </div>
+                <form id="registrationForm">
+                    <input type="hidden" id="courseId" name="courseId">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">人事號 <span style="color:var(--warning)">*</span></label>
+                            <input type="text" id="employeeId" class="form-input" required placeholder="請輸入人事號">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">姓名 <span style="color:var(--warning)">*</span></label>
+                            <input type="text" id="name" class="form-input" required placeholder="請輸入姓名">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">部門 <span style="color:var(--warning)">*</span></label>
+                            <input type="text" id="department" class="form-input" required placeholder="請輸入部門">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">職稱 <span style="color:var(--warning)">*</span></label>
+                            <input type="text" id="jobTitle" class="form-input" required placeholder="請輸入職稱">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email <span style="color:var(--warning)">*</span></label>
+                        <input type="email" id="email" class="form-input" required placeholder="ex: user@hospital.org.tw">
+                    </div>
+                    <div style="text-align: right; border-top: 1px solid var(--border); padding-top: 20px;">
+                        <button type="submit" class="btn submit-btn" id="finalSubmitBtn">
+                            確認送出 / Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 0.85rem; font-family: 'Noto Sans TC', sans-serif;">
+            聯絡資訊：教學部楊依玲教學行政管理員 分機57426
+        </div>
+    </div>
+
+    <script>
+        const courses = [
+            {
+                id: 1,
+                title: "第一堂課程",
+                date: "2月24日 (二)",
+                time: "14:30 – 16:00",
+                location: "第五醫療大樓 5F 552會議室",
+                quota: 5
+            },
+            {
+                id: 2,
+                title: "第二堂課程",
+                date: "3月13日 (五)",
+                time: "14:00 – 15:30",
+                location: "第五醫療大樓 5F 552會議室",
+                quota: 5
+            },
+            {
+                id: 3,
+                title: "第三堂課程",
+                date: "3月25日 (三)",
+                time: "10:00 – 11:30",
+                location: "第五醫療大樓 6F 563會議室",
+                quota: 5
+            }
+        ];
+
+        const courseListEl = document.getElementById('course-list');
+        const regSection = document.getElementById('registration-section');
+        const selectedDisplay = document.getElementById('selected-course-display');
+        const courseIdInput = document.getElementById('courseId');
+
+        function renderCourses() {
+            courseListEl.innerHTML = courses.map(course => `
+                <div class="tech-card course-item" id="course-card-${course.id}" onclick="selectCourse(${course.id})">
+                    <div class="course-header">
+                        <div class="course-title">${course.title}</div>
+                        <span class="quota-badge">剩餘名額: ${course.quota}</span>
+                    </div>
+                    <div class="course-info">
+                        <div class="info-row"><span class="info-icon">DATE</span> ${course.date}</div>
+                        <div class="info-row"><span class="info-icon">TIME</span> ${course.time}</div>
+                        <div class="info-row"><span class="info-icon">LOC</span> ${course.location}</div>
+                    </div>
+                    <div class="action-area" style="text-align: right;">
+                        <button class="btn btn-outline" style="margin-left: auto;">
+                            立即報名
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectCourse(id) {
+            const course = courses.find(c => c.id === id);
+            document.querySelectorAll('.course-item').forEach(el => {
+                el.classList.remove('active');
+                el.querySelector('.btn').classList.add('btn-outline');
+                el.querySelector('.btn').innerText = '立即報名';
+                el.querySelector('.btn').style.background = 'transparent';
+                el.querySelector('.btn').style.color = 'var(--text-main)';
+            });
+            const card = document.getElementById(`course-card-${id}`);
+            card.classList.add('active');
+            const btn = card.querySelector('.btn');
+            btn.classList.remove('btn-outline');
+            btn.style.background = 'var(--accent)';
+            btn.style.color = 'white';
+            btn.innerText = '✓ 已選擇';
+
+            regSection.style.display = 'block';
+            selectedDisplay.innerHTML = `>> Target: ${course.title} | ${course.date}`;
+            courseIdInput.value = id;
+
+            setTimeout(() => {
+                regSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX5g7Q3r6n2K0hZ2IYTSu3_w2gS9Se9juHJdL_HL0Wp9sgR136yK-PVYj4pxAVthuT/exec';
+
+        document.getElementById('registrationForm').onsubmit = function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('finalSubmitBtn');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Processing...';
+
+            const courseId = parseInt(document.getElementById('courseId').value);
+            const course = courses.find(c => c.id === courseId);
+
+            const data = {
+                timestamp: new Date().toLocaleString('zh-TW'),
+                courseDate: course.date + ' ' + course.time,
+                employeeId: document.getElementById('employeeId').value,
+                name: document.getElementById('name').value,
+                department: document.getElementById('department').value,
+                jobTitle: document.getElementById('jobTitle').value,
+                email: document.getElementById('email').value
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify(data) 
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    showModal('success', 'Registration Successful', `
+                        Status: Confirmed<br>
+                        Course: ${course.title}<br>
+                        Reminder: 請記得攜帶可上網筆電上課
+                    `, '#10B981');
+                    
+                    document.getElementById('registrationForm').reset();
+                    regSection.style.display = 'none';
+                    resetCards();
+                    course.quota -= 1; 
+                    renderCourses();
+                } else {
+                    showModal('error', 'Registration Failed', result.message, '#EF4444');
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                showModal('error', 'Network Error', '無法連線至伺服器，請檢查網路或稍後再試。', '#EF4444');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+        };
+
+        function resetCards() {
+            document.querySelectorAll('.course-item').forEach(el => {
+                el.classList.remove('active');
+                const b = el.querySelector('.btn');
+                b.classList.add('btn-outline');
+                b.innerText = '立即報名';
+                b.style.background = 'transparent';
+                b.style.color = 'var(--text-main)';
+            });
+        }
+
+        function showModal(type, title, content, color) {
+            const icon = type === 'success' ? '✓' : '!';
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px);
+                display: flex; justify-content: center; align-items: center; z-index: 1000;
+            `;
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 8px; border-top: 4px solid ${color}; text-align: center; max-width: 90%; width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+                    <div style="font-size: 40px; margin-bottom: 10px; color: ${color};">${icon}</div>
+                    <h3 style="color: #0F172A; margin-bottom: 10px; font-size: 1.25rem; font-weight: 700;">${title}</h3>
+                    <div style="background: #F1F5F9; padding: 15px; border-radius: 4px; text-align: left; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #334155;">
+                        ${content}
+                    </div>
+                    <button onclick="this.closest('div').parentElement.remove()" style="
+                        background: #0F172A; color: white; border: none; padding: 10px 30px;
+                        border-radius: 6px; font-weight: 500; cursor: pointer; width: 100%;
+                    ">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        renderCourses();
+    </script>
+</body>
+</html>
