@@ -184,6 +184,12 @@
             background: #F8FAFC;
         }
 
+        .course-item.full {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background: #f1f1f1;
+        }
+
         .course-header {
             display: flex;
             justify-content: space-between;
@@ -365,7 +371,7 @@
             </div>
         </div>
 
-        <!-- 新增：課程需求提醒 -->
+        <!-- 課程需求提醒 -->
         <div class="tech-card" style="padding: 16px; border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 16px; background: #EFF6FF;">
             <div style="font-size: 2rem;">💻</div>
             <div>
@@ -426,6 +432,12 @@
     </div>
 
     <script>
+        // 設定 Apps Script 網址
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX5g7Q3r6n2K0hZ2IYTSu3_w2gS9Se9juHJdL_HL0Wp9sgR136yK-PVYj4pxAVthuT/exec';
+        
+        // 初始設定 (會被 fetchQuotaData 覆蓋)
+        let MAX_QUOTA = 5; 
+
         const courses = [
             {
                 id: 1,
@@ -433,7 +445,7 @@
                 date: "2月24日 (二)",
                 time: "14:30 – 16:00",
                 location: "第五醫療大樓 5F 552會議室",
-                quota: 5
+                quota: "讀取中..." // 初始狀態
             },
             {
                 id: 2,
@@ -441,7 +453,7 @@
                 date: "3月13日 (五)",
                 time: "14:00 – 15:30",
                 location: "第五醫療大樓 5F 552會議室",
-                quota: 5
+                quota: "讀取中..."
             },
             {
                 id: 3,
@@ -449,7 +461,7 @@
                 date: "3月25日 (三)",
                 time: "10:00 – 11:30",
                 location: "第五醫療大樓 6F 563會議室",
-                quota: 5
+                quota: "讀取中..."
             }
         ];
 
@@ -459,11 +471,21 @@
         const courseIdInput = document.getElementById('courseId');
 
         function renderCourses() {
-            courseListEl.innerHTML = courses.map(course => `
-                <div class="tech-card course-item" id="course-card-${course.id}" onclick="selectCourse(${course.id})">
+            courseListEl.innerHTML = courses.map(course => {
+                // 判斷是否額滿 (quota 為數字且 <= 0)
+                const isFull = typeof course.quota === 'number' && course.quota <= 0;
+                const quotaText = typeof course.quota === 'number' ? `剩餘名額: ${course.quota}` : course.quota;
+                const cardClass = isFull ? 'tech-card course-item full' : 'tech-card course-item';
+                const btnText = isFull ? '已額滿' : '立即報名';
+                const btnClass = isFull ? 'btn btn-outline' : 'btn btn-outline';
+                const clickAction = isFull ? '' : `onclick="selectCourse(${course.id})"`;
+                const btnDisabled = isFull ? 'disabled style="opacity:0.5"' : '';
+
+                return `
+                <div class="${cardClass}" id="course-card-${course.id}" ${clickAction}>
                     <div class="course-header">
                         <div class="course-title">${course.title}</div>
-                        <span class="quota-badge">剩餘名額: ${course.quota}</span>
+                        <span class="quota-badge" style="${isFull ? 'background:#fee;color:red' : ''}">${quotaText}</span>
                     </div>
                     <div class="course-info">
                         <div class="info-row"><span class="info-icon">DATE</span> ${course.date}</div>
@@ -471,23 +493,60 @@
                         <div class="info-row"><span class="info-icon">LOC</span> ${course.location}</div>
                     </div>
                     <div class="action-area" style="text-align: right;">
-                        <button class="btn btn-outline" style="margin-left: auto;">
-                            立即報名
+                        <button class="${btnClass}" style="margin-left: auto;" ${btnDisabled}>
+                            ${btnText}
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+        }
+
+        // 新增：從後端抓取最新名額
+        function fetchQuotaData() {
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(response => response.json())
+                .then(data => {
+                    // 更新最大名額設定 (如果後端有回傳)
+                    if (data.maxQuota) {
+                        MAX_QUOTA = data.maxQuota;
+                    }
+
+                    // 更新各課程名額
+                    courses.forEach(course => {
+                        // 組合 key 來查詢已用名額 (格式必須與 Sheet B欄一致)
+                        const key = course.date + ' ' + course.time;
+                        const used = (data.used && data.used[key]) ? data.used[key] : 0;
+                        
+                        // 計算剩餘名額
+                        course.quota = Math.max(0, MAX_QUOTA - used);
+                    });
+                    
+                    renderCourses();
+                })
+                .catch(err => {
+                    console.error("無法取得名額資料:", err);
+                    // 發生錯誤時，預設顯示 5 (或保持讀取中)
+                    courses.forEach(c => c.quota = (typeof c.quota === 'number') ? c.quota : 5);
+                    renderCourses();
+                });
         }
 
         function selectCourse(id) {
             const course = courses.find(c => c.id === id);
+            
+            // 如果還在讀取中或已額滿，不動作
+            if (typeof course.quota !== 'number' || course.quota <= 0) return;
+
             document.querySelectorAll('.course-item').forEach(el => {
-                el.classList.remove('active');
-                el.querySelector('.btn').classList.add('btn-outline');
-                el.querySelector('.btn').innerText = '立即報名';
-                el.querySelector('.btn').style.background = 'transparent';
-                el.querySelector('.btn').style.color = 'var(--text-main)';
+                if(!el.classList.contains('full')) {
+                    el.classList.remove('active');
+                    el.querySelector('.btn').classList.add('btn-outline');
+                    el.querySelector('.btn').innerText = '立即報名';
+                    el.querySelector('.btn').style.background = 'transparent';
+                    el.querySelector('.btn').style.color = 'var(--text-main)';
+                }
             });
+            
             const card = document.getElementById(`course-card-${id}`);
             card.classList.add('active');
             const btn = card.querySelector('.btn');
@@ -504,8 +563,6 @@
                 regSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
         }
-
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX5g7Q3r6n2K0hZ2IYTSu3_w2gS9Se9juHJdL_HL0Wp9sgR136yK-PVYj4pxAVthuT/exec';
 
         document.getElementById('registrationForm').onsubmit = function(e) {
             e.preventDefault();
@@ -545,8 +602,10 @@
                     document.getElementById('registrationForm').reset();
                     regSection.style.display = 'none';
                     resetCards();
-                    course.quota -= 1; 
-                    renderCourses();
+                    
+                    // 報名成功後，重新抓取一次最新名額
+                    fetchQuotaData();
+                    
                 } else {
                     showModal('error', 'Registration Failed', result.message, '#EF4444');
                 }
@@ -563,12 +622,14 @@
 
         function resetCards() {
             document.querySelectorAll('.course-item').forEach(el => {
-                el.classList.remove('active');
-                const b = el.querySelector('.btn');
-                b.classList.add('btn-outline');
-                b.innerText = '立即報名';
-                b.style.background = 'transparent';
-                b.style.color = 'var(--text-main)';
+                if(!el.classList.contains('full')) {
+                    el.classList.remove('active');
+                    const b = el.querySelector('.btn');
+                    b.classList.add('btn-outline');
+                    b.innerText = '立即報名';
+                    b.style.background = 'transparent';
+                    b.style.color = 'var(--text-main)';
+                }
             });
         }
 
@@ -596,7 +657,11 @@
             document.body.appendChild(modal);
         }
 
+        // 初始化
         renderCourses();
+        // 抓取真實名額
+        fetchQuotaData();
+
     </script>
 </body>
 </html>
