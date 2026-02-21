@@ -682,76 +682,75 @@
             btn.disabled = true;
             btn.innerText = 'Processing...';
 
-            // 將每個勾選的課程打包成一個獨立的請求
-            const promises = selectedCheckboxes.map(cb => {
-                const course = courses.find(c => c.id === parseInt(cb.value));
-                const data = {
-                    timestamp: new Date().toLocaleString('zh-TW'),
-                    courseDate: course.date + ' ' + course.time,
-                    location: course.location, 
-                    employeeId: document.getElementById('employeeId').value,
-                    name: document.getElementById('name').value,
-                    department: document.getElementById('department').value,
-                    jobTitle: document.getElementById('jobTitle').value,
-                    email: document.getElementById('email').value
+            // 將勾選的課程打包成陣列
+            const selectedCoursesData = selectedCheckboxes.map(cb => {
+                const c = courses.find(item => item.id === parseInt(cb.value));
+                return {
+                    id: c.id,
+                    title: c.title,
+                    courseDate: c.date + ' ' + c.time,
+                    location: c.location
                 };
-
-                return fetch(GOOGLE_SCRIPT_URL, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                    body: JSON.stringify(data) 
-                })
-                .then(response => response.json())
-                .then(result => ({ course, result }))
-                .catch(error => ({ course, result: { status: 'error', message: '連線失敗' } }));
             });
 
-            // 等待所有報名請求完成
-            Promise.all(promises).then(results => {
-                let successHtml = '';
-                let errorHtml = '';
-                let allSuccess = true;
+            // 準備整包傳送的資料
+            const data = {
+                timestamp: new Date().toLocaleString('zh-TW'),
+                employeeId: document.getElementById('employeeId').value,
+                name: document.getElementById('name').value,
+                department: document.getElementById('department').value,
+                jobTitle: document.getElementById('jobTitle').value,
+                email: document.getElementById('email').value,
+                courses: selectedCoursesData // 新增：傳送課程陣列
+            };
 
-                // 整理每一堂課的回傳結果
-                results.forEach(res => {
-                    if (res.result.status === 'success') {
-                        successHtml += `<div style="margin-bottom: 8px;">✅ <strong>${res.course.title}</strong>: 報名成功</div>`;
-                    } else {
-                        allSuccess = false;
-                        errorHtml += `<div style="margin-bottom: 8px;">❌ <strong>${res.course.title}</strong>: 報名失敗 (${res.result.message})</div>`;
+            fetch(GOOGLE_SCRIPT_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify(data) 
+            })
+            .then(response => response.json())
+            .then(result => {
+                // 後端回傳 success (全成功) 或 partial (部分成功)
+                if (result.status === 'success' || result.status === 'partial') {
+                    let successHtml = '';
+                    let errorHtml = '';
+                    
+                    // 產生成功的列表 (加入日期時間)
+                    if (result.successCourses && result.successCourses.length > 0) {
+                        successHtml = result.successCourses.map(c => 
+                            `<div style="margin-bottom: 8px;">✅ <strong style="color: var(--primary);">${c.title}</strong><br><span style="font-size: 0.85rem; color: var(--text-muted);">時間：${c.courseDate}</span></div>`
+                        ).join('');
                     }
-                });
+                    
+                    // 產生失敗的列表 (例如遇到額滿)
+                    if (result.failedCourses && result.failedCourses.length > 0) {
+                        errorHtml = result.failedCourses.map(c => 
+                            `<div style="margin-bottom: 8px; color: #EF4444;">❌ <strong>${c.title}</strong>: 報名失敗 (${c.reason || '已額滿'})</div>`
+                        ).join('');
+                    }
 
-                if (allSuccess) {
-                    showModal('success', 'Registration Successful', `
-                        <div style="margin-bottom: 15px;">${successHtml}</div>
+                    const title = result.status === 'success' ? 'Registration Successful' : '部分報名成功';
+                    const color = result.status === 'success' ? '#10B981' : '#F59E0B';
+
+                    // 顯示合併後的結果
+                    showModal('success', title, `
+                        <div style="margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">${successHtml}${errorHtml}</div>
                         <div style="color: var(--danger); font-weight: 700;">Reminder: 請記得攜帶可上網筆電上課</div>
-                    `, '#10B981');
+                    `, color);
                     
                     document.getElementById('registrationForm').reset();
                     regSection.style.display = 'none';
+                    resetCards();
+                    fetchQuotaData();
+                    
                 } else {
-                    // 部分成功或全部失敗
-                    const isPartialSuccess = successHtml !== '';
-                    const title = isPartialSuccess ? '部分報名成功' : 'Registration Failed';
-                    const color = isPartialSuccess ? '#F59E0B' : '#EF4444';
-                    const type = isPartialSuccess ? 'warning' : 'error';
-
-                    showModal(type, title, `
-                        ${successHtml ? `<div style="color: #10B981; margin-bottom: 10px;">${successHtml}</div>` : ''}
-                        ${errorHtml ? `<div style="color: #EF4444; margin-bottom: 10px;">${errorHtml}</div>` : ''}
-                        ${isPartialSuccess ? `<div style="color: var(--danger); font-weight: 700;">Reminder: 請記得攜帶可上網筆電上課</div>` : ''}
-                    `, color);
-
-                    if(isPartialSuccess) {
-                        document.getElementById('registrationForm').reset();
-                        regSection.style.display = 'none';
-                    }
+                    showModal('error', 'Registration Failed', result.message || '報名失敗，所選課程可能已額滿', '#EF4444');
                 }
-
-                resetCards();
-                // 重新抓取最新名額
-                fetchQuotaData();
+            })
+            .catch((err) => {
+                console.error(err);
+                showModal('error', 'Network Error', '無法連線至伺服器，請檢查網路或稍後再試。', '#EF4444');
             })
             .finally(() => {
                 btn.disabled = false;
