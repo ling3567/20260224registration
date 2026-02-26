@@ -2,6 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全端系統搭建與實作應用教育訓練</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -414,6 +415,21 @@
     </style>
 </head>
 <body>
+    <!-- 新增：IE 瀏覽器阻擋與友善提示腳本 -->
+    <script>
+        if (window.document.documentMode) {
+            document.write('<div style="background-color: #0F172A; color: white; text-align: center; padding: 20px; font-family: sans-serif; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center;">');
+            document.write('<div style="font-size: 80px; margin-bottom: 20px;">⚠️</div>');
+            document.write('<h1 style="font-size: 30px; margin-bottom: 15px; color: #EF4444;">不支援此瀏覽器</h1>');
+            document.write('<p style="font-size: 18px; line-height: 1.6; max-width: 600px; margin-bottom: 30px; color: #CBD5E1;">系統偵測到您正在使用已停止更新的 Internet Explorer (IE) 瀏覽器。<br>為確保報名功能正常運作與最佳視覺體驗，本系統不支援 IE。</p>');
+            document.write('<div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px;">');
+            document.write('<p style="font-size: 20px; font-weight: bold; color: #38BDF8;">👉 請複製上方網址，並改用 Google Chrome 或 Microsoft Edge 開啟。</p>');
+            document.write('</div>');
+            document.write('</div>');
+            document.execCommand("Stop"); // 停止載入原本會跑版的畫面
+        }
+    </script>
+
     <div class="top-bar"></div>
     <header>
         <div class="container">
@@ -711,6 +727,12 @@
             })
             .then(response => response.json())
             .then(result => {
+                // 新增：如果報名資料已寫入，但 Email 寄送失敗的提醒
+                if (result.emailStatus === 'failed') {
+                    console.error("Email Error:", result.emailError);
+                    alert("⚠️ 您的報名資料已成功送出！\n但系統自動寄送 Email 失敗，原因：\n" + result.emailError + "\n\n請聯繫管理員確認。");
+                }
+
                 // 後端回傳 success (全成功) 或 partial (部分成功)
                 if (result.status === 'success' || result.status === 'partial') {
                     let successHtml = '';
