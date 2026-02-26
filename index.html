@@ -7,6 +7,7 @@
     <title>全端系統搭建與實作應用教育訓練</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
+        /* 加入舊版 IE 色彩備援方案 (Fallback) */
         :root {
             --bg-body: #F1F5F9;
             --bg-card: #FFFFFF;
@@ -26,12 +27,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Noto Sans TC', sans-serif;
+            font-family: 'Noto Sans TC', sans-serif, 'Microsoft JhengHei';
+            background-color: #F1F5F9; /* IE 備援色 */
             background-color: var(--bg-body);
-            background-image: 
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
+            color: #334155; /* IE 備援色 */
             color: var(--text-main);
             min-height: 100vh;
             padding-bottom: 60px;
@@ -40,6 +39,7 @@
 
         .top-bar {
             height: 6px;
+            background: #2563EB; /* IE 備援色 */
             background: linear-gradient(90deg, #2563EB, #06B6D4);
             width: 100%;
             position: fixed;
@@ -63,9 +63,9 @@
 
         .tag-pill {
             display: inline-block;
+            background: #0F172A;
             background: var(--primary);
             color: white;
-            font-family: 'Noto Sans TC', sans-serif;
             font-size: 13px;
             padding: 4px 12px;
             border-radius: 4px;
@@ -73,18 +73,16 @@
             letter-spacing: 1px;
         }
 
-        /* 新增：響應式頁尾容器樣式 */
         .footer-container {
             margin-top: 60px;
             padding-top: 30px;
-            border-top: 1px dashed var(--border);
+            border-top: 1px dashed #E2E8F0;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 15px;
-            color: var(--text-muted);
+            color: #64748B;
             font-size: 0.9rem;
-            font-family: 'Noto Sans TC', sans-serif;
             text-align: center;
         }
 
@@ -94,11 +92,6 @@
             max-width: 100%;
             display: block;
             opacity: 0.9;
-            transition: opacity 0.2s;
-        }
-
-        .footer-logo:hover {
-            opacity: 1;
         }
 
         .footer-contact {
@@ -108,38 +101,32 @@
         h1 {
             font-size: 3rem;
             font-weight: 900;
+            color: #0F172A;
             color: var(--primary);
             margin-bottom: 10px;
             line-height: 1.2;
-            letter-spacing: -1px;
         }
 
         .subtitle {
             font-size: 1.25rem;
-            color: var(--text-muted);
-            font-weight: 400;
+            color: #64748B;
             font-family: 'JetBrains Mono', monospace;
         }
 
         .tech-card {
+            background: #FFFFFF;
             background: var(--bg-card);
+            border: 1px solid #E2E8F0;
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .tech-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-            border-color: #CBD5E1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .card-label {
             font-size: 0.8rem;
-            color: var(--text-muted);
+            color: #64748B;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -149,22 +136,10 @@
             gap: 8px;
         }
 
-        .card-label::before {
-            content: '';
-            display: block;
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-
         .instructor-name {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: #0F172A;
         }
 
         .tags-container {
@@ -174,36 +149,19 @@
         }
 
         .skill-tag {
-            background: var(--code-bg);
-            color: var(--code-text);
-            font-family: 'JetBrains Mono', monospace;
+            background: #F8FAFC;
+            color: #0F172A;
             padding: 6px 12px;
             border-radius: 4px;
             font-size: 0.9rem;
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-
-        .skill-tag:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: #EFF6FF;
+            border: 1px solid #E2E8F0;
         }
 
         h2.section-title {
             margin: 30px 0 20px;
             font-size: 1.5rem;
-            color: var(--primary);
+            color: #0F172A;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        h2.section-title::before {
-            content: '//';
-            color: var(--accent);
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .course-item {
@@ -213,13 +171,12 @@
         }
         
         .course-item.active {
-            border-color: var(--accent);
+            border-color: #2563EB;
             background: #F8FAFC;
         }
 
         .course-item.full {
             opacity: 0.7;
-            cursor: not-allowed;
             background: #f1f1f1;
         }
 
@@ -233,18 +190,16 @@
         .course-title {
             font-size: 1.25rem;
             font-weight: 700;
-            color: var(--primary);
+            color: #0F172A;
         }
 
         .quota-badge {
             background: #FEF2F2;
             color: #EF4444;
             font-size: 12px;
-            font-weight: 600;
             padding: 4px 8px;
             border-radius: 4px;
             border: 1px solid #FECACA;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .course-info {
@@ -257,62 +212,38 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--text-main);
+            color: #334155;
             font-size: 0.95rem;
         }
 
         .info-icon {
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
+            color: #64748B;
             width: 60px;
-            flex-shrink: 0;
         }
 
         .btn {
-            background: var(--primary);
+            background: #0F172A;
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 6px;
             font-size: 0.95rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
             width: 100%;
             margin-top: 16px;
-            font-family: 'Noto Sans TC', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
         }
-
-        .btn:hover { background: var(--accent); }
-        .btn:disabled { background: #CBD5E1; cursor: not-allowed; }
         
         .btn-outline {
             background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-        }
-        
-        .btn-outline:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: transparent;
+            border: 1px solid #E2E8F0;
+            color: #334155;
         }
 
         #registration-section {
             display: none;
             margin-top: 30px;
-            border-top: 1px dashed var(--border);
+            border-top: 1px dashed #E2E8F0;
             padding-top: 30px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .form-header {
@@ -320,11 +251,11 @@
             background: #EFF6FF;
             padding: 16px;
             border-radius: 6px;
-            border-left: 4px solid var(--accent);
+            border-left: 4px solid #2563EB;
         }
 
         .form-label {
-            color: var(--text-main);
+            color: #334155;
             font-weight: 600;
             margin-bottom: 6px;
             display: block;
@@ -335,56 +266,39 @@
             width: 100%;
             padding: 10px 12px;
             background: white;
-            border: 1px solid var(--border);
+            border: 1px solid #E2E8F0;
             border-radius: 4px;
             font-size: 1rem;
-            color: var(--primary);
-            transition: all 0.2s;
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            color: #0F172A;
         }
 
         .form-group { margin-bottom: 20px; }
 
         .submit-btn {
-            background: var(--accent);
+            background: #2563EB;
             font-weight: 700;
             padding: 12px;
         }
-        .submit-btn:hover { background: var(--accent-hover); }
 
-        /* 新增：多選課程的 Checkbox 樣式 */
         .course-checkbox-label {
             display: flex;
             align-items: center;
             padding: 12px 16px;
-            border: 1px solid var(--border);
+            border: 1px solid #E2E8F0;
             border-radius: 6px;
             margin-bottom: 10px;
             background: white;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .course-checkbox-label:hover:not(.disabled) {
-            border-color: var(--accent);
-            background: #EFF6FF;
-        }
+        
         .course-checkbox-label.disabled {
             background: #F1F5F9;
             opacity: 0.6;
-            cursor: not-allowed;
         }
         .course-checkbox-input {
             margin-right: 16px;
             width: 18px;
             height: 18px;
-            accent-color: var(--accent);
-            cursor: pointer;
         }
 
         .grid-2 {
@@ -395,12 +309,9 @@
 
         @media (min-width: 768px) {
             .grid-2 { grid-template-columns: 1fr 1fr; }
-            h1 { font-size: 3.5rem; }
             .course-info { grid-template-columns: auto auto auto; }
             .btn { width: auto; display: inline-flex; }
-            .action-area { text-align: right; }
             
-            /* 電腦版頁尾排版：左右並排並加入分隔線 */
             .footer-container {
                 flex-direction: row;
                 justify-content: center;
@@ -408,28 +319,14 @@
                 gap: 24px;
             }
             .footer-contact {
-                border-left: 1px solid var(--border);
+                border-left: 1px solid #E2E8F0;
                 padding-left: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 新增：IE 瀏覽器阻擋與友善提示腳本 -->
-    <script>
-        if (window.document.documentMode) {
-            document.write('<div style="background-color: #0F172A; color: white; text-align: center; padding: 20px; font-family: sans-serif; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center;">');
-            document.write('<div style="font-size: 80px; margin-bottom: 20px;">⚠️</div>');
-            document.write('<h1 style="font-size: 30px; margin-bottom: 15px; color: #EF4444;">不支援此瀏覽器</h1>');
-            document.write('<p style="font-size: 18px; line-height: 1.6; max-width: 600px; margin-bottom: 30px; color: #CBD5E1;">系統偵測到您正在使用已停止更新的 Internet Explorer (IE) 瀏覽器。<br>為確保報名功能正常運作與最佳視覺體驗，本系統不支援 IE。</p>');
-            document.write('<div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px;">');
-            document.write('<p style="font-size: 20px; font-weight: bold; color: #38BDF8;">👉 請複製上方網址，並改用 Google Chrome 或 Microsoft Edge 開啟。</p>');
-            document.write('</div>');
-            document.write('</div>');
-            document.execCommand("Stop"); // 停止載入原本會跑版的畫面
-        }
-    </script>
-
+    <!-- 已移除 IE 阻擋腳本，允許舊版瀏覽器呈現 -->
     <div class="top-bar"></div>
     <header>
         <div class="container">
@@ -440,6 +337,7 @@
     </header>
 
     <div class="container">
+        <!-- 若在 IE 中排版變直式，為正常相容現象，不影響功能 -->
         <div class="grid-2">
             <div class="tech-card">
                 <span class="card-label">Instructor</span>
@@ -460,12 +358,11 @@
             </div>
         </div>
 
-        <!-- 課程需求提醒 -->
-        <div class="tech-card" style="padding: 16px; border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 16px; background: #EFF6FF;">
-            <div style="font-size: 2rem;">💻</div>
+        <div class="tech-card" style="padding: 16px; border-left: 4px solid #2563EB; display: flex; align-items: center; background: #EFF6FF;">
+            <div style="font-size: 2rem; margin-right: 16px;">💻</div>
             <div>
-                <span class="card-label" style="margin-bottom: 4px; color: var(--accent);">Course Requirement</span>
-                <div style="font-weight: 700; color: var(--primary); font-size: 1.1rem;">
+                <span class="card-label" style="margin-bottom: 4px; color: #2563EB;">Course Requirement</span>
+                <div style="font-weight: 700; color: #0F172A; font-size: 1.1rem;">
                     上課請自備可上網筆電，以利課程實作
                 </div>
             </div>
@@ -475,42 +372,41 @@
         <div id="course-list"></div>
 
         <div id="registration-section">
-            <div class="tech-card" style="border-top: 4px solid var(--accent);">
+            <div class="tech-card" style="border-top: 4px solid #2563EB;">
                 <div class="form-header">
-                    <h3 style="font-size: 1.2rem; margin-bottom: 4px; color: var(--primary);">填寫報名資料</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">請勾選欲報名的場次（可複選），並填寫下方資料。</p>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 4px; color: #0F172A;">填寫報名資料</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">請勾選欲報名的場次（可複選），並填寫下方資料。</p>
                 </div>
                 <form id="registrationForm">
-                    <!-- 替換原本的單一課程顯示，改為多選列表 -->
-                    <div id="course-checkboxes" style="margin-bottom: 24px; border-bottom: 1px dashed var(--border); padding-bottom: 15px;">
-                        <!-- Checkboxes 將由 JavaScript 動態生成 -->
+                    <div id="course-checkboxes" style="margin-bottom: 24px; border-bottom: 1px dashed #E2E8F0; padding-bottom: 15px;">
+                        <!-- Checkboxes generated by JS -->
                     </div>
 
                     <div class="grid-2">
                         <div class="form-group">
-                            <label class="form-label">人事號 <span style="color:var(--warning)">*</span></label>
+                            <label class="form-label">人事號 <span style="color:#F59E0B">*</span></label>
                             <input type="text" id="employeeId" class="form-input" required placeholder="請輸入人事號">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">姓名 <span style="color:var(--warning)">*</span></label>
+                            <label class="form-label">姓名 <span style="color:#F59E0B">*</span></label>
                             <input type="text" id="name" class="form-input" required placeholder="請輸入姓名">
                         </div>
                     </div>
                     <div class="grid-2">
                         <div class="form-group">
-                            <label class="form-label">部門 <span style="color:var(--warning)">*</span></label>
+                            <label class="form-label">部門 <span style="color:#F59E0B">*</span></label>
                             <input type="text" id="department" class="form-input" required placeholder="請輸入部門">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">職稱 <span style="color:var(--warning)">*</span></label>
+                            <label class="form-label">職稱 <span style="color:#F59E0B">*</span></label>
                             <input type="text" id="jobTitle" class="form-input" required placeholder="請輸入職稱">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Email <span style="color:var(--warning)">*</span></label>
+                        <label class="form-label">Email <span style="color:#F59E0B">*</span></label>
                         <input type="email" id="email" class="form-input" required placeholder="ex: user@hospital.org.tw">
                     </div>
-                    <div style="text-align: right; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <div style="text-align: right; border-top: 1px solid #E2E8F0; padding-top: 20px;">
                         <button type="submit" class="btn submit-btn" id="finalSubmitBtn">
                             確認送出 / Submit
                         </button>
@@ -519,7 +415,6 @@
             </div>
         </div>
         
-        <!-- 頁尾：最佳化響應式排版的 LOGO 與聯絡資訊 -->
         <div class="footer-container">
             <img src="https://raw.githubusercontent.com/ling3567/20260224registration/main/MELOGO.png" alt="教學部LOGO" class="footer-logo">
             <div class="footer-contact">
@@ -528,298 +423,247 @@
         </div>
     </div>
 
+    <!-- 舊版 IE 相容 JavaScript (ES5 寫法) -->
     <script>
-        // 設定 Apps Script 網址
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX5g7Q3r6n2K0hZ2IYTSu3_w2gS9Se9juHJdL_HL0Wp9sgR136yK-PVYj4pxAVthuT/exec';
-        
-        // 初始設定 (會被 fetchQuotaData 覆蓋)
-        let MAX_QUOTA = 5; 
+        var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX5g7Q3r6n2K0hZ2IYTSu3_w2gS9Se9juHJdL_HL0Wp9sgR136yK-PVYj4pxAVthuT/exec';
+        var MAX_QUOTA = 5; 
 
-        const courses = [
-            {
-                id: 1,
-                title: "第一堂課程",
-                date: "2月24日 (二)",
-                time: "14:30 – 16:00",
-                location: "第五醫療大樓 5F 552會議室",
-                quota: "讀取中..." // 初始狀態
-            },
-            {
-                id: 2,
-                title: "第二堂課程",
-                date: "3月13日 (五)",
-                time: "14:00 – 15:30",
-                location: "第五醫療大樓 5F 552會議室",
-                quota: "讀取中..."
-            },
-            {
-                id: 3,
-                title: "第三堂課程",
-                date: "3月25日 (三)",
-                time: "10:00 – 11:30",
-                location: "第五醫療大樓 6F 563會議室",
-                quota: "讀取中..."
-            }
+        var courses = [
+            { id: 1, title: "第一堂課程", date: "2月24日 (二)", time: "14:30 – 16:00", location: "第五醫療大樓 5F 552會議室", quota: "讀取中..." },
+            { id: 2, title: "第二堂課程", date: "3月13日 (五)", time: "14:00 – 15:30", location: "第五醫療大樓 5F 552會議室", quota: "讀取中..." },
+            { id: 3, title: "第三堂課程", date: "3月25日 (三)", time: "10:00 – 11:30", location: "第五醫療大樓 6F 563會議室", quota: "讀取中..." }
         ];
 
-        const courseListEl = document.getElementById('course-list');
-        const regSection = document.getElementById('registration-section');
-        const selectedDisplay = document.getElementById('selected-course-display');
-        const courseIdInput = document.getElementById('courseId');
+        var courseListEl = document.getElementById('course-list');
+        var regSection = document.getElementById('registration-section');
 
         function renderCourses() {
-            courseListEl.innerHTML = courses.map(course => {
-                // 判斷是否額滿 (quota 為數字且 <= 0)
-                const isFull = typeof course.quota === 'number' && course.quota <= 0;
-                const quotaText = typeof course.quota === 'number' ? `剩餘名額: ${course.quota}` : course.quota;
-                const cardClass = isFull ? 'tech-card course-item full' : 'tech-card course-item';
-                const btnText = isFull ? '已額滿' : '立即報名';
-                const btnClass = isFull ? 'btn btn-outline' : 'btn btn-outline';
-                const clickAction = isFull ? '' : `onclick="selectCourse(${course.id})"`;
-                const btnDisabled = isFull ? 'disabled style="opacity:0.5"' : '';
+            var html = '';
+            for(var i=0; i<courses.length; i++) {
+                var c = courses[i];
+                var isFull = typeof c.quota === 'number' && c.quota <= 0;
+                var quotaText = typeof c.quota === 'number' ? '剩餘名額: ' + c.quota : c.quota;
+                var cardClass = isFull ? 'tech-card course-item full' : 'tech-card course-item';
+                var btnText = isFull ? '已額滿' : '立即報名';
+                var btnClass = isFull ? 'btn btn-outline' : 'btn btn-outline';
+                var clickAction = isFull ? '' : 'onclick="selectCourse(' + c.id + ')"';
+                var disabledStyle = isFull ? 'opacity:0.5;' : '';
+                var badgeStyle = isFull ? 'background:#fee;color:red;' : '';
 
-                return `
-                <div class="${cardClass}" id="course-card-${course.id}" ${clickAction}>
-                    <div class="course-header">
-                        <div class="course-title">${course.title}</div>
-                        <span class="quota-badge" style="${isFull ? 'background:#fee;color:red' : ''}">${quotaText}</span>
-                    </div>
-                    <div class="course-info">
-                        <div class="info-row"><span class="info-icon">DATE</span> ${course.date}</div>
-                        <div class="info-row"><span class="info-icon">TIME</span> ${course.time}</div>
-                        <div class="info-row"><span class="info-icon">LOC</span> ${course.location}</div>
-                    </div>
-                    <div class="action-area" style="text-align: right;">
-                        <button class="${btnClass}" style="margin-left: auto;" ${btnDisabled}>
-                            ${btnText}
-                        </button>
-                    </div>
-                </div>
-            `}).join('');
+                html += '<div class="' + cardClass + '" id="course-card-' + c.id + '" ' + clickAction + '>' +
+                            '<div class="course-header">' +
+                                '<div class="course-title">' + c.title + '</div>' +
+                                '<span class="quota-badge" style="' + badgeStyle + '">' + quotaText + '</span>' +
+                            '</div>' +
+                            '<div class="course-info">' +
+                                '<div class="info-row"><span class="info-icon">DATE</span> ' + c.date + '</div>' +
+                                '<div class="info-row"><span class="info-icon">TIME</span> ' + c.time + '</div>' +
+                                '<div class="info-row"><span class="info-icon">LOC</span> ' + c.location + '</div>' +
+                            '</div>' +
+                            '<div style="text-align: right;">' +
+                                '<button class="' + btnClass + '" style="' + disabledStyle + '">' + btnText + '</button>' +
+                            '</div>' +
+                        '</div>';
+            }
+            courseListEl.innerHTML = html;
         }
 
-        // 新增：從後端抓取最新名額
+        // 使用 XMLHttpRequest 替代 Fetch，支援舊版瀏覽器
         function fetchQuotaData() {
-            fetch(GOOGLE_SCRIPT_URL)
-                .then(response => response.json())
-                .then(data => {
-                    // 更新最大名額設定 (如果後端有回傳)
-                    if (data.maxQuota) {
-                        MAX_QUOTA = data.maxQuota;
-                    }
-
-                    // 更新各課程名額
-                    courses.forEach(course => {
-                        // 組合 key 來查詢已用名額 (格式必須與 Sheet B欄一致)
-                        const key = course.date + ' ' + course.time;
-                        const used = (data.used && data.used[key]) ? data.used[key] : 0;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', GOOGLE_SCRIPT_URL, true);
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        if (data.maxQuota) MAX_QUOTA = data.maxQuota;
                         
-                        // 計算剩餘名額
-                        course.quota = Math.max(0, MAX_QUOTA - used);
-                    });
-                    
-                    renderCourses();
-                })
-                .catch(err => {
-                    console.error("無法取得名額資料:", err);
-                    // 發生錯誤時，預設顯示 5 (或保持讀取中)
-                    courses.forEach(c => c.quota = (typeof c.quota === 'number') ? c.quota : 5);
-                    renderCourses();
-                });
+                        for(var i=0; i<courses.length; i++) {
+                            var key = courses[i].date + ' ' + courses[i].time;
+                            var used = (data.used && data.used[key]) ? data.used[key] : 0;
+                            courses[i].quota = Math.max(0, MAX_QUOTA - used);
+                        }
+                    } catch(e) { console.error('Data parse error'); }
+                }
+                renderCourses();
+            };
+            xhr.onerror = function() {
+                for(var i=0; i<courses.length; i++) {
+                    courses[i].quota = (typeof courses[i].quota === 'number') ? courses[i].quota : 5;
+                }
+                renderCourses();
+            };
+            xhr.send();
         }
 
         function selectCourse(id) {
-            const course = courses.find(c => c.id === id);
-            
-            // 如果還在讀取中或已額滿，不動作
-            if (typeof course.quota !== 'number' || course.quota <= 0) return;
+            var selectedCourse = null;
+            for(var i=0; i<courses.length; i++) {
+                if(courses[i].id === id) { selectedCourse = courses[i]; break; }
+            }
+            if (!selectedCourse || typeof selectedCourse.quota !== 'number' || selectedCourse.quota <= 0) return;
 
-            // 處理上方的視覺按鈕
-            document.querySelectorAll('.course-item').forEach(el => {
-                if(!el.classList.contains('full')) {
-                    el.classList.remove('active');
-                    el.querySelector('.btn').classList.add('btn-outline');
-                    el.querySelector('.btn').innerText = '立即報名';
-                    el.querySelector('.btn').style.background = 'transparent';
-                    el.querySelector('.btn').style.color = 'var(--text-main)';
+            var items = document.querySelectorAll('.course-item');
+            for(var j=0; j<items.length; j++) {
+                if(items[j].className.indexOf('full') === -1) {
+                    items[j].className = items[j].className.replace(' active', '');
+                    var b = items[j].querySelector('.btn');
+                    if(b) {
+                        b.className = 'btn btn-outline';
+                        b.innerText = '立即報名';
+                        b.style.background = 'transparent';
+                        b.style.color = '#334155';
+                    }
                 }
-            });
+            }
             
-            const card = document.getElementById(`course-card-${id}`);
-            card.classList.add('active');
-            const btn = card.querySelector('.btn');
-            btn.classList.remove('btn-outline');
-            btn.style.background = 'var(--accent)';
-            btn.style.color = 'white';
-            btn.innerText = '✓ 已選擇';
+            var card = document.getElementById('course-card-' + id);
+            if(card) card.className += ' active';
+            var btn = card.querySelector('.btn');
+            if(btn) {
+                btn.className = 'btn';
+                btn.style.background = '#2563EB';
+                btn.style.color = 'white';
+                btn.innerText = '✓ 已選擇';
+            }
 
-            // 動態生成課程多選清單
-            const checkboxContainer = document.getElementById('course-checkboxes');
-            checkboxContainer.innerHTML = courses.map(c => {
-                const isFull = typeof c.quota === 'number' && c.quota <= 0;
-                // 預設勾選使用者剛點擊的那堂課
-                const isChecked = c.id === id ? 'checked' : '';
-                const disabledClass = isFull ? 'disabled' : '';
-                const disabledAttr = isFull ? 'disabled' : '';
-                const badge = isFull ? '<span class="quota-badge" style="background:#fee;color:red;margin-left:auto;">已額滿</span>' : '';
-
-                return `
-                    <label class="course-checkbox-label ${disabledClass}">
-                        <input type="checkbox" name="selectedCourses" value="${c.id}" class="course-checkbox-input" ${isChecked} ${disabledAttr}>
-                        <div style="flex-grow: 1;">
-                            <div style="font-weight: 700; color: var(--primary);">${c.title}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">${c.date} ${c.time}</div>
-                        </div>
-                        ${badge}
-                    </label>
-                `;
-            }).join('');
+            var cbHtml = '';
+            for(var k=0; k<courses.length; k++) {
+                var c = courses[k];
+                var cIsFull = typeof c.quota === 'number' && c.quota <= 0;
+                var isChecked = (c.id === id) ? 'checked' : '';
+                var dClass = cIsFull ? 'disabled' : '';
+                var badge = cIsFull ? '<span class="quota-badge" style="background:#fee;color:red;margin-left:auto;">已額滿</span>' : '';
+                
+                cbHtml += '<label class="course-checkbox-label ' + dClass + '">' +
+                            '<input type="checkbox" name="selectedCourses" value="' + c.id + '" class="course-checkbox-input" ' + isChecked + ' ' + (cIsFull ? 'disabled' : '') + '>' +
+                            '<div style="flex-grow: 1;">' +
+                                '<div style="font-weight: 700; color: #0F172A;">' + c.title + '</div>' +
+                                '<div style="font-size: 0.85rem; color: #64748B;">' + c.date + ' ' + c.time + '</div>' +
+                            '</div>' + badge +
+                        '</label>';
+            }
+            document.getElementById('course-checkboxes').innerHTML = cbHtml;
 
             regSection.style.display = 'block';
-
-            setTimeout(() => {
-                regSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+            window.scrollTo(0, regSection.offsetTop - 50);
         }
 
         document.getElementById('registrationForm').onsubmit = function(e) {
             e.preventDefault();
             
-            // 取得所有有打勾的課程
-            const selectedCheckboxes = Array.from(document.querySelectorAll('input[name="selectedCourses"]:checked'));
-            
-            if (selectedCheckboxes.length === 0) {
+            var checkboxes = document.querySelectorAll('input[name="selectedCourses"]:checked');
+            if (checkboxes.length === 0) {
                 alert("請至少勾選一堂課程！");
                 return;
             }
 
-            const btn = document.getElementById('finalSubmitBtn');
-            const originalText = btn.innerText;
+            var btn = document.getElementById('finalSubmitBtn');
+            var originalText = btn.innerText;
             btn.disabled = true;
-            btn.innerText = 'Processing...';
+            btn.innerText = '處理中...';
 
-            // 將勾選的課程打包成陣列
-            const selectedCoursesData = selectedCheckboxes.map(cb => {
-                const c = courses.find(item => item.id === parseInt(cb.value));
-                return {
-                    id: c.id,
-                    title: c.title,
-                    courseDate: c.date + ' ' + c.time,
-                    location: c.location
-                };
-            });
+            var selectedData = [];
+            for(var i=0; i<checkboxes.length; i++) {
+                var cid = parseInt(checkboxes[i].value);
+                for(var j=0; j<courses.length; j++) {
+                    if(courses[j].id === cid) {
+                        selectedData.push({
+                            id: courses[j].id,
+                            title: courses[j].title,
+                            courseDate: courses[j].date + ' ' + courses[j].time,
+                            location: courses[j].location
+                        });
+                        break;
+                    }
+                }
+            }
 
-            // 準備整包傳送的資料
-            const data = {
+            var submitData = {
                 timestamp: new Date().toLocaleString('zh-TW'),
                 employeeId: document.getElementById('employeeId').value,
                 name: document.getElementById('name').value,
                 department: document.getElementById('department').value,
                 jobTitle: document.getElementById('jobTitle').value,
                 email: document.getElementById('email').value,
-                courses: selectedCoursesData // 新增：傳送課程陣列
+                courses: selectedData
             };
 
-            fetch(GOOGLE_SCRIPT_URL, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                body: JSON.stringify(data) 
-            })
-            .then(response => response.json())
-            .then(result => {
-                // 新增：如果報名資料已寫入，但 Email 寄送失敗的提醒
-                if (result.emailStatus === 'failed') {
-                    console.error("Email Error:", result.emailError);
-                    alert("⚠️ 您的報名資料已成功送出！\n但系統自動寄送 Email 失敗，原因：\n" + result.emailError + "\n\n請聯繫管理員確認。");
-                }
-
-                // 後端回傳 success (全成功) 或 partial (部分成功)
-                if (result.status === 'success' || result.status === 'partial') {
-                    let successHtml = '';
-                    let errorHtml = '';
-                    
-                    // 產生成功的列表 (加入日期時間)
-                    if (result.successCourses && result.successCourses.length > 0) {
-                        successHtml = result.successCourses.map(c => 
-                            `<div style="margin-bottom: 8px;">✅ <strong style="color: var(--primary);">${c.title}</strong><br><span style="font-size: 0.85rem; color: var(--text-muted);">時間：${c.courseDate}</span></div>`
-                        ).join('');
-                    }
-                    
-                    // 產生失敗的列表 (例如遇到額滿)
-                    if (result.failedCourses && result.failedCourses.length > 0) {
-                        errorHtml = result.failedCourses.map(c => 
-                            `<div style="margin-bottom: 8px; color: #EF4444;">❌ <strong>${c.title}</strong>: 報名失敗 (${c.reason || '已額滿'})</div>`
-                        ).join('');
-                    }
-
-                    const title = result.status === 'success' ? 'Registration Successful' : '部分報名成功';
-                    const color = result.status === 'success' ? '#10B981' : '#F59E0B';
-
-                    // 顯示合併後的結果
-                    showModal('success', title, `
-                        <div style="margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">${successHtml}${errorHtml}</div>
-                        <div style="color: var(--danger); font-weight: 700;">Reminder: 請記得攜帶可上網筆電上課</div>
-                    `, color);
-                    
-                    document.getElementById('registrationForm').reset();
-                    regSection.style.display = 'none';
-                    resetCards();
-                    fetchQuotaData();
-                    
-                } else {
-                    showModal('error', 'Registration Failed', result.message || '報名失敗，所選課程可能已額滿', '#EF4444');
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                showModal('error', 'Network Error', '無法連線至伺服器，請檢查網路或稍後再試。', '#EF4444');
-            })
-            .finally(() => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', GOOGLE_SCRIPT_URL, true);
+            xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+            
+            xhr.onload = function() {
                 btn.disabled = false;
                 btn.innerText = originalText;
-            });
+                
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var result = JSON.parse(xhr.responseText);
+                        
+                        if (result.emailStatus === 'failed') {
+                            alert("⚠️ 您的報名資料已送出！\n但系統自動寄信失敗，請聯繫管理員確認。");
+                        }
+
+                        if (result.status === 'success' || result.status === 'partial') {
+                            var successHtml = '';
+                            var errorHtml = '';
+                            
+                            if (result.successCourses) {
+                                for(var m=0; m<result.successCourses.length; m++) {
+                                    var sc = result.successCourses[m];
+                                    successHtml += '<div style="margin-bottom: 8px;">✅ <strong style="color: #0F172A;">' + sc.title + '</strong><br><span style="font-size: 0.85rem; color: #64748B;">時間：' + sc.courseDate + '</span></div>';
+                                }
+                            }
+                            if (result.failedCourses) {
+                                for(var n=0; n<result.failedCourses.length; n++) {
+                                    var fc = result.failedCourses[n];
+                                    errorHtml += '<div style="margin-bottom: 8px; color: #EF4444;">❌ <strong>' + fc.title + '</strong>: 報名失敗 (' + (fc.reason || '已額滿') + ')</div>';
+                                }
+                            }
+
+                            var title = result.status === 'success' ? 'Registration Successful' : '部分報名成功';
+                            var color = result.status === 'success' ? '#10B981' : '#F59E0B';
+
+                            showModal(title, '<div style="margin-bottom: 15px; border-bottom: 1px dashed #E2E8F0; padding-bottom: 10px; text-align:left;">' + successHtml + errorHtml + '</div><div style="color: #EF4444; font-weight: 700;">Reminder: 請記得攜帶可上網筆電上課</div>', color);
+                            
+                            document.getElementById('registrationForm').reset();
+                            regSection.style.display = 'none';
+                            fetchQuotaData();
+                        } else {
+                            showModal('Registration Failed', result.message || '報名失敗', '#EF4444');
+                        }
+                    } catch(err) {
+                        showModal('Error', '伺服器回應異常', '#EF4444');
+                    }
+                } else {
+                    showModal('Error', '網路連線失敗', '#EF4444');
+                }
+            };
+            
+            xhr.onerror = function() {
+                btn.disabled = false;
+                btn.innerText = originalText;
+                showModal('Error', '無法連線至伺服器', '#EF4444');
+            };
+            
+            xhr.send(JSON.stringify(submitData));
         };
 
-        function resetCards() {
-            document.querySelectorAll('.course-item').forEach(el => {
-                if(!el.classList.contains('full')) {
-                    el.classList.remove('active');
-                    const b = el.querySelector('.btn');
-                    b.classList.add('btn-outline');
-                    b.innerText = '立即報名';
-                    b.style.background = 'transparent';
-                    b.style.color = 'var(--text-main)';
-                }
-            });
-        }
-
-        function showModal(type, title, content, color) {
-            const icon = type === 'success' ? '✓' : '!';
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px);
-                display: flex; justify-content: center; align-items: center; z-index: 1000;
-            `;
-            modal.innerHTML = `
-                <div style="background: white; padding: 30px; border-radius: 8px; border-top: 4px solid ${color}; text-align: center; max-width: 90%; width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
-                    <div style="font-size: 40px; margin-bottom: 10px; color: ${color};">${icon}</div>
-                    <h3 style="color: #0F172A; margin-bottom: 10px; font-size: 1.25rem; font-weight: 700;">${title}</h3>
-                    <div style="background: #F1F5F9; padding: 15px; border-radius: 4px; text-align: left; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #334155;">
-                        ${content}
-                    </div>
-                    <button onclick="this.closest('div').parentElement.remove()" style="
-                        background: #0F172A; color: white; border: none; padding: 10px 30px;
-                        border-radius: 6px; font-weight: 500; cursor: pointer; width: 100%;
-                    ">Close</button>
-                </div>
-            `;
+        function showModal(title, content, color) {
+            var icon = color === '#10B981' ? '✓' : '!';
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;';
+            modal.innerHTML = '<div style="background: white; padding: 30px; border-radius: 8px; border-top: 4px solid ' + color + '; text-align: center; max-width: 90%; width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">' +
+                    '<div style="font-size: 40px; margin-bottom: 10px; color: ' + color + ';">' + icon + '</div>' +
+                    '<h3 style="color: #0F172A; margin-bottom: 10px; font-size: 1.25rem;">' + title + '</h3>' +
+                    '<div style="background: #F1F5F9; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem; color: #334155;">' + content + '</div>' +
+                    '<button onclick="this.parentNode.parentNode.removeChild(this.parentNode);" style="background: #0F172A; color: white; border: none; padding: 10px 30px; border-radius: 6px; cursor: pointer; width: 100%;">Close</button>' +
+                '</div>';
             document.body.appendChild(modal);
         }
 
-        // 初始化
         renderCourses();
-        // 抓取真實名額
         fetchQuotaData();
 
     </script>
